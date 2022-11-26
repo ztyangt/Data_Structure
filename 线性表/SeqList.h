@@ -62,7 +62,7 @@ int LocateElem(SqList L, ElemType e) {
 }
 
 //遍历顺序表元素
-void PrintList(SqList L)
+void Print_SeqList(SqList L)
 {
 	for (int i = 0; i < L.length; i++) {
 		printf("%d\t", L.data[i]);
