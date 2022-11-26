@@ -1,0 +1,3 @@
+build
+# Unignore all with extensions
+!*.*
