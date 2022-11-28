@@ -1,65 +1,54 @@
 #include <stdio.h> 
 #include <stdlib.h>
-// 不带头结点
-typedef struct Linknode {
-	int data;
-	struct Linknode* next;
-}Linknode, * LiStack;
-// 后插法插入,在链栈首处插入一个节点 
-bool InsertNextNode(LiStack& L, int e) {
-	Linknode* s = (Linknode*)malloc(sizeof(Linknode));
-	s->data = e;
-	if (L == NULL) {
-		L = s;	// 第一个节点 
-		s->next = NULL;// 下一个初始化为空 ！！！ 
-	}
-	else {
-		s->next = L;
-		L = s;
-	}
-	return true;
+#define MaxSize 5
+typedef struct {
+	int data[MaxSize];
+	int front, rear;
+}SqQueue;
+// 初始化 
+void InitQueue(SqQueue& Q) {
+	Q.front = Q.rear = 0;
 }
-// 头插法建立链表
-LiStack LiStack_HeadInsert(LiStack& L) {
-	int x = 1;
-	scanf("%d", &x);
-	while (x != 0) {
-		InsertNextNode(L, x);
-		scanf("%d", &x);
-	}
-	return L;
-}
-// 入栈
-bool Push(LiStack& L, int e) {
-	return InsertNextNode(L, e);
-}
-// 出栈
-bool Pop(LiStack& L, int& e) {
-	if (L == NULL) {
-		return false;
-	}
-	Linknode* s = L;
-	e = s->data;
-	L = s->next;
-	free(s);
-	return true;
-}
-// 是否为空
-bool LiStackEmpty(LiStack& L) {
-	if (L == NULL) {
+// 判断为空
+bool QueueEmpty(SqQueue& Q) {
+	if (Q.front == Q.rear) {
 		return true;
 	}
 	return false;
 }
-// 打印
-void PrintLiStack(LiStack& L) {
-	if (L == NULL) {
-		return;
+// 入队 - 只能在队尾插入 
+bool EnQueue(SqQueue& Q, int e) {
+	if ((Q.rear + 1) % MaxSize == Q.front) {// 判满 
+		return false;
 	}
-	Linknode* p = L;
-	while (p != NULL) {
-		printf("%d\t", p->data);
-		p = p->next;
+	Q.data[Q.rear] = e;
+	Q.rear = (Q.rear + 1) % MaxSize;
+	return true;
+}
+// 出队 - 只能在队头出 
+bool DeQueue(SqQueue& Q, int& e) {
+	if (Q.front == Q.rear) {// 判空 
+		return false;
+	}
+	e = Q.data[Q.front];
+	Q.front = (Q.front + 1) % MaxSize;
+	return true;
+}
+// 读队头元素
+bool GetHead(SqQueue& Q, int& e) {
+	if (Q.front == Q.rear) {
+		return false;
+	}
+	e = Q.data[Q.front];
+	return true;
+}
+int GetSize(SqQueue& Q) {
+	return (Q.rear - Q.front + MaxSize) % MaxSize;
+}
+// 打印
+void PrintSqQueue(SqQueue& S) {
+	for (int i = S.front; i != S.rear; i = (i + 1) % MaxSize) {
+		printf("%d\t", S.data[i]);
 	}
 	printf("\n");
 }
@@ -67,24 +56,39 @@ int main()
 {
 	int e;
 	bool b;
-	LiStack L = NULL;
-	b = LiStackEmpty(L);
-	if (b) printf("栈为空\n");
-	printf("输入值建立栈，输入0结束\n");
-	LiStack_HeadInsert(L);
-	PrintLiStack(L);
-	Push(L, 11);
-	Push(L, 13);
-	Push(L, 16);
-	printf("元素压入栈后：\n");
-	PrintLiStack(L);
-	b = Pop(L, e);
-	printf("出栈元素：%d\n", e);
-	PrintLiStack(L);
-	b = Pop(L, e);
-	printf("出栈元素：%d\n", e);
-	PrintLiStack(L);
-	
+	SqQueue Q;
+	InitQueue(Q);
+	if (QueueEmpty(Q)) printf("队列为空\n");
+	EnQueue(Q, 1);
+	printf("元素1入队后，队列大小：%d\n", GetSize(Q));
+	EnQueue(Q, 3);
+	printf("元素3入队后，队列大小：%d\n", GetSize(Q));
+	EnQueue(Q, 5);
+	printf("元素5入队后，队列大小：%d\n", GetSize(Q));
+	EnQueue(Q, 9);
+	printf("元素9入队后，队列大小：%d\n", GetSize(Q));
+	PrintSqQueue(Q);
+
+	b = EnQueue(Q, 10);
+	if (!b) printf("因为牺牲了一个单元，队列已满, 插入10失败！\n");
+	DeQueue(Q, e);
+	printf("队头元素 %d 出队\n", e);
+	EnQueue(Q, 10);
+	printf("元素10入队后，队列大小：%d\n", GetSize(Q));
+	PrintSqQueue(Q);
+
+	DeQueue(Q, e); 
+	printf("队头元素 %d 出队，队列大小：%d\n", e, GetSize(Q));
+	PrintSqQueue(Q);
+
+	EnQueue(Q, 12);
+	printf("元素12入队后，队列大小：%d\n", GetSize(Q));
+	PrintSqQueue(Q);
+
+	DeQueue(Q, e); DeQueue(Q, e); DeQueue(Q, e);
+	if (QueueEmpty(Q)) {
+		printf("所有元素出队，队列为空\n");
+	}
 	return 0;
 }
 
