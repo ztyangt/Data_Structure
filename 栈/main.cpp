@@ -22,6 +22,7 @@ void LinkStack(){
 }
 
 
+
 int main()
 {
     // SeqStack();
