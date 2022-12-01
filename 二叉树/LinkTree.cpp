@@ -141,11 +141,11 @@ int main()
 
     // 遍历二叉树
     printf("先序遍历:");
-    PreOrder(root);   
-    printf("\n"); 
+    PreOrder(root);
+    printf("\n");
     printf("中序遍历:");
-    InOrder(root);  
-    printf("\n");      
+    InOrder(root);
+    printf("\n");
     printf("后序遍历:");
     PostOrder(root);
 
